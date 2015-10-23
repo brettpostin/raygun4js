@@ -1,4 +1,4 @@
-/*! Raygun4js - v1.18.7 - 2015-10-20
+/*! Raygun4js - v1.18.7 - 2015-10-22
 * https://github.com/MindscapeHQ/raygun4js
 * Copyright (c) 2015 MindscapeHQ; Licensed MIT */
 (function(window, undefined) {
@@ -1231,7 +1231,8 @@ var raygunFactory = function (window, $, undefined) {
       _filteredKeys,
       _whitelistedScriptDomains = [],
       _beforeSendCallback,
-      _raygunApiUrl = 'https://api.raygun.io',
+      _generateCustomGroupKeyCallback,
+      _raygunApiUrl = 'http://localhost:3001',
       _excludedHostnames = null,
       _excludedUserAgents = null,
       _filterScope = 'customData',
@@ -1400,6 +1401,11 @@ var raygunFactory = function (window, $, undefined) {
     onBeforeSend: function (callback) {
       _beforeSendCallback = callback;
 
+      return Raygun;
+    },
+
+    generateCustomGroupingKey: function(callback) {
+      _generateCustomGroupKeyCallback = callback;
       return Raygun;
     }
   };
@@ -1854,6 +1860,10 @@ var raygunFactory = function (window, $, undefined) {
 
     if (_filterScope === 'all') {
       payload = filterObject(payload);
+    }
+
+    if(typeof _generateCustomGroupKeyCallback === 'function') {
+      payload.Details.groupingKey = _generateCustomGroupKeyCallback(payload, stackTrace, options);
     }
 
     if (typeof _beforeSendCallback === 'function') {

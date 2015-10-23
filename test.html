@@ -1,0 +1,70 @@
+<html>
+<head>
+    <script src="dist/raygun.js"></script>
+    <!--<script type="text/javascript" src="//cdn.raygun.io/raygun4js/raygun.min.js"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-md5/1.1.1/js/md5.min.js"></script>
+
+    <script>
+        Raygun.init('N5z2rA+jEoCDynv9nNQANg==', {
+            enableOfflineSave: true,
+            debugMode: true
+        }).attach();
+
+        /*Raygun.onBeforeSend(function (payload) {
+         console.log("Sending to RG", payload);
+         return false;
+         });*/
+
+        Raygun.generateCustomGroupKey(function (payload, stackTrace, options) {
+            return md5(stackTrace.name + stackTrace.stack.length + "TEST");
+        });
+
+        Raygun.filterSensitiveData(['type']);
+    </script>
+</head>
+<body>
+<script>
+
+    function item(first, last) {
+        this.first = first;
+        this.last = last;
+
+
+        this.info = {
+            browser: {
+                type: "Chrome",
+                other: [
+                    {
+                        type: "IE"
+                    }, {
+                        type: "IE 2"
+                    }
+                ]
+            },
+            os: {
+                type: "MacOS",
+                version: 10.11,
+                fun: function () {
+                    return 'Bob';
+                }
+            },
+            userId: 123
+        };
+    }
+
+    item.prototype.test = function () {
+        console.log(this.first, this.last);
+    };
+
+    var t = new item('Daniel', 'Wylie');
+    t.test();
+
+    //Raygun.send('Test', t);
+
+
+    bob.Test123();
+
+
+</script>
+</body>
+</html>

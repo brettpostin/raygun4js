@@ -72,7 +72,7 @@ module.exports = function(grunt) {
       },
       src: {
         files: '<%= jshint.src.src %>',
-        tasks: ['jshint:src', 'jasmine']
+        tasks: ['jshint', 'jasmine', 'clean', 'concat', 'string-replace', 'uglify']
       }
     },
     'string-replace': {
