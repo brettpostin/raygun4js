@@ -28,6 +28,7 @@ var raygunFactory = function (window, $, undefined) {
         _filteredKeys,
         _whitelistedScriptDomains = [],
         _beforeSendCallback,
+        _generateCustomGroupKeyCallback,
         _raygunApiUrl = 'https://api.raygun.io',
         _excludedHostnames = null,
         _excludedUserAgents = null,
@@ -242,7 +243,11 @@ var raygunFactory = function (window, $, undefined) {
 
         onBeforeSend: function (callback) {
             _beforeSendCallback = callback;
+            return Raygun;
+        },
 
+        generateCustomGroupingKey: function(callback) {
+            _generateCustomGroupKeyCallback = callback;
             return Raygun;
         },
 
@@ -702,6 +707,10 @@ var raygunFactory = function (window, $, undefined) {
 
         if (_filterScope === 'all') {
           payload = filterObject(payload);
+        }
+
+        if (typeof _generateCustomGroupKeyCallback === 'function') {
+            payload.Details.groupingKey = _generateCustomGroupKeyCallback(payload, stackTrace, options);
         }
 
         if (typeof _beforeSendCallback === 'function') {
